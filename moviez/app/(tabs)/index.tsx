@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text className="text-2xl font-bold text-primary ">Edit app/index.tsx to edit this screen.</Text>
+      <Text className="text-2xl font-bold text-primary ">Welcome</Text>
     </View>
   );
 }

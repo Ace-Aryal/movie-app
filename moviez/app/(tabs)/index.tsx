@@ -7,9 +7,10 @@ import {
   Image,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useFetch } from "@/services/useFetch";
 import { fetchMovies, TMBD_CONFIG } from "@/services/api";
 import { Ionicons } from "@expo/vector-icons";
@@ -78,35 +79,38 @@ export default function Index() {
                 marginRight: 10,
               }}
               renderItem={({ item }) => {
-                console.log(item);
                 return (
-                  <View className="flex-1 mb-8">
-                    <Image
-                      id="image"
-                      className="rounded-lg"
-                      style={{ width: "100%", aspectRatio: 3 / 4 }}
-                      source={{
-                        uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-                      }}
-                    />
-                    <Text className="text-white font-semibold mt-1">
-                      {item.title}
-                    </Text>
-                    <View className="flex flex-1 flex-row my-1 gap-2">
-                      <Ionicons name="star" size={12} color={"yellow"} />
-                      <Text className="text-white">
-                        {Math.floor(item.vote_average / 2)}
-                      </Text>
-                    </View>
-                    <View className="flex flex-row justify-between">
-                      <Text className="text-gray-400">
-                        {item.release_date.slice(0, 4)}
-                      </Text>
-                      <Text className="text-gray-400">
-                        {item.original_language.toUpperCase()}
-                      </Text>
-                    </View>
-                  </View>
+                  <TouchableOpacity className="flex-1 mb-16">
+                    <Link href={`/movie/${item.id}`}>
+                      <View className="f">
+                        <Image
+                          id="image"
+                          className="rounded-lg"
+                          style={{ width: "100%", aspectRatio: 3 / 4 }}
+                          source={{
+                            uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+                          }}
+                        />
+                        <Text className="text-white font-semibold mt-1">
+                          {item.title}
+                        </Text>
+                        <View className="flex  flex-row my-1 gap-2">
+                          <Ionicons name="star" size={12} color={"yellow"} />
+                          <Text className="text-white">
+                            {Math.floor(item.vote_average / 2)}
+                          </Text>
+                        </View>
+                        <View className="flex flex-row justify-between">
+                          <Text className="text-gray-400">
+                            {item.release_date.slice(0, 4)}
+                          </Text>
+                          <Text className="text-gray-400">
+                            {item.original_language.toUpperCase()}
+                          </Text>
+                        </View>
+                      </View>
+                    </Link>
+                  </TouchableOpacity>
                 );
               }}
             />

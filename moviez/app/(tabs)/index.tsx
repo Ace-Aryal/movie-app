@@ -37,7 +37,7 @@ export default function Index() {
     data: movies,
     error,
     isLoading,
-  } = useFetch<null | Movie[]>(() => fetchMovies({ query: "" }));
+  } = useFetch(() => fetchMovies({ query: "" }));
 
   return (
     <View

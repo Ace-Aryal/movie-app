@@ -37,7 +37,7 @@ export default function Searchpage() {
     data: movies,
     error,
     isLoading,
-  } = useFetch<null | Movie[]>(() => fetchMovies({ query: searchQuery }));
+  } = useFetch(() => fetchMovies({ query: searchQuery }), true, searchQuery);
 
   return (
     <View
@@ -56,6 +56,12 @@ export default function Searchpage() {
             placeholder="Search movie..."
           />
         </View>
+        {searchQuery && (
+          <Text className="text-gray-400 font-bold mt-2">
+            Search results for{" "}
+            <Text className="text-white font-bold">{searchQuery}</Text>
+          </Text>
+        )}
         {isLoading ? (
           <ActivityIndicator
             size="large"
@@ -77,6 +83,11 @@ export default function Searchpage() {
                 marginTop: 10,
                 marginRight: 10,
               }}
+              ListEmptyComponent={() => (
+                <View className="flex-1 items-center justify-center">
+                  <Text className="text-gray-400">No results found</Text>
+                </View>
+              )}
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity className="flex-1 mb-16">

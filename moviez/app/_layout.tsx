@@ -2,6 +2,9 @@ import { Stack } from "expo-router";
 import "../global.css";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
+import "react-native-get-random-values";
+import "react-native-url-polyfill";
+
 // import { Appearance } from "react-native";
 export default function RootLayout() {
   // const colorScheme = Appearance.getColorScheme();

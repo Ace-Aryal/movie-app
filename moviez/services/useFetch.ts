@@ -3,7 +3,7 @@ import databaseService from "./database";
 import { Movie } from "@/app/(tabs)/search";
 
 export function useFetch(
-  fetchFn: () => Promise<Movie[]>,
+  fetchFn: () => Promise<unknown>,
   autoFetch = true,
   searchQuery = ""
 ) {
@@ -15,7 +15,7 @@ export function useFetch(
       setLoading(true);
       setError(null);
       const res = await fetchFn();
-      setData(res);
+      setData(res as Movie[]);
     } catch (error) {
       console.error(error, "error in use fetch");
       setError(
@@ -32,7 +32,7 @@ export function useFetch(
   };
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (data && data.length > 0) {
+      if (searchQuery && data && data.length > 0) {
         console.log(data, "movie data");
         databaseService.updateSearchCount(searchQuery, data[0]);
       }

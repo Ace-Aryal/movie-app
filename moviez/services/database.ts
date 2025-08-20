@@ -21,7 +21,7 @@ class Database {
       const searchAlreadyExists = await this.databases.listDocuments(
         appwriteConfig.databaseId,
         appwriteConfig.collectionId,
-        [Query.equal("search_term", query)]
+        [Query.equal("title", movie.title)]
       );
       if (searchAlreadyExists.total > 0) {
         const updateRes = await this.databases.updateDocument(
@@ -56,6 +56,18 @@ class Database {
       }
     } catch (error) {
       console.error(error, "error in update search count");
+    }
+  };
+  getTrendingMovies = async () => {
+    try {
+      const res = await this.databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.collectionId,
+        [Query.orderDesc("count"), Query.limit(10)]
+      );
+      return res.documents;
+    } catch (error) {
+      console.error(error, "error in get trending movies");
     }
   };
 }

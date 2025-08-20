@@ -14,6 +14,8 @@ import { Link, useRouter } from "expo-router";
 import { useFetch } from "@/services/useFetch";
 import { fetchMovies, TMBD_CONFIG } from "@/services/api";
 import { Ionicons } from "@expo/vector-icons";
+import databaseService from "@/services/database";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 export type Movie = {
   adult: boolean;
   backdrop_path: string;
@@ -33,6 +35,11 @@ export type Movie = {
 
 export default function Index() {
   const router = useRouter();
+  const {
+    data: trendingMovies,
+    error: getTrendingMoviesError,
+    isLoading: isTrendingMoviesLoading,
+  } = useFetch(() => databaseService.getTrendingMovies());
   const {
     data: movies,
     error,
@@ -56,64 +63,102 @@ export default function Index() {
             placeholder="Search movie..."
           />
         </View>
-        {isLoading ? (
+        {isLoading || isTrendingMoviesLoading ? (
           <ActivityIndicator
             size="large"
             color={"white"}
             className="mt-10 self-center"
           />
-        ) : error ? (
-          <Text className="text-gray-50">{error.message} </Text>
+        ) : error || getTrendingMoviesError ? (
+          <Text className="text-gray-50">
+            {error?.message || getTrendingMoviesError?.message}
+          </Text>
         ) : (
           <>
-            <Text className="text-gray-50 mt-2 text-lg">Latest Movies</Text>
-            <FlatList
-              data={movies}
-              keyExtractor={(item) => String(item.id)}
-              className="mt-2 pb-32"
-              numColumns={3}
-              columnWrapperStyle={{
-                justifyContent: "flex-start",
-                gap: 20,
-                marginTop: 10,
-                marginRight: 10,
-              }}
-              renderItem={({ item }) => {
-                return (
-                  <TouchableOpacity className="flex-1 mb-16">
-                    <Link href={`/movie/${item.id}`}>
-                      <View className="f">
-                        <Image
-                          id="image"
-                          className="rounded-lg"
-                          style={{ width: "100%", aspectRatio: 3 / 4 }}
-                          source={{
-                            uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-                          }}
-                        />
-                        <Text className="text-white font-semibold mt-1">
-                          {item.title}
-                        </Text>
-                        <View className="flex  flex-row my-1 gap-2">
-                          <Ionicons name="star" size={12} color={"yellow"} />
-                          <Text className="text-white">
-                            {Math.floor(item.vote_average / 2)}
+            <ScrollView>
+              <Text className="text-gray-50 mt-2 text-lg">Popular Movies</Text>
+              <FlatList
+                horizontal
+                data={trendingMovies}
+                renderItem={({ item }) => (
+                  <View className="flex-row">
+                    <TouchableOpacity className="flex-1 mb-16 mr-10">
+                      <Link href={`/movie/${item.movie_id}`}>
+                        <View
+                          style={{ width: 120, marginRight: 10 }}
+                          className="w-30  "
+                        >
+                          <Image
+                            id="image"
+                            className="rounded-lg"
+                            style={{ width: 120, aspectRatio: 3 / 4 }}
+                            source={{
+                              uri: `https://image.tmdb.org/t/p/w500${item.poster_url}`,
+                            }}
+                          />
+                          <Text
+                            className="text-white font-semibold mt-1"
+                            numberOfLines={3}
+                            ellipsizeMode="tail"
+                          >
+                            {item.title}
                           </Text>
                         </View>
-                        <View className="flex flex-row justify-between">
-                          <Text className="text-gray-400">
-                            {item.release_date.slice(0, 4)}
+                      </Link>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+
+              <Text className="text-gray-50 mt-8 text-lg">Latest Movies</Text>
+              <FlatList
+                data={movies}
+                keyExtractor={(item) => String(item.id)}
+                className="mt-2 pb-32"
+                numColumns={3}
+                columnWrapperStyle={{
+                  justifyContent: "flex-start",
+                  gap: 20,
+                  marginTop: 10,
+                  marginRight: 10,
+                }}
+                renderItem={({ item }) => {
+                  return (
+                    <TouchableOpacity className="flex-1 mb-16">
+                      <Link href={`/movie/${item.id}`}>
+                        <View className="f">
+                          <Image
+                            id="image"
+                            className="rounded-lg"
+                            style={{ width: "100%", aspectRatio: 3 / 4 }}
+                            source={{
+                              uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+                            }}
+                          />
+                          <Text className="text-white font-semibold mt-1">
+                            {item.title}
                           </Text>
-                          <Text className="text-gray-400">
-                            {item.original_language.toUpperCase()}
-                          </Text>
+                          <View className="flex  flex-row my-1 gap-2">
+                            <Ionicons name="star" size={12} color={"yellow"} />
+                            <Text className="text-white">
+                              {Math.floor(item.vote_average / 2)}
+                            </Text>
+                          </View>
+                          <View className="flex flex-row justify-between">
+                            <Text className="text-gray-400">
+                              {item.release_date.slice(0, 4)}
+                            </Text>
+                            <Text className="text-gray-400">
+                              {item.original_language.toUpperCase()}
+                            </Text>
+                          </View>
                         </View>
-                      </View>
-                    </Link>
-                  </TouchableOpacity>
-                );
-              }}
-            />
+                      </Link>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </ScrollView>
           </>
         )}
       </View>

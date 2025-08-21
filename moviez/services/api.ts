@@ -23,3 +23,24 @@ export const fetchMovies = async ({ query }: { query: string }) => {
   console.log("data", data);
   return data.results;
 };
+
+export const fetchMovieDetails = async (id: string) => {
+  try {
+    const response = await fetch(
+      `${TMBD_CONFIG.url}movie/${id}?api_key=${TMBD_CONFIG.api_key}`,
+      {
+        method: "GET",
+        headers: TMBD_CONFIG.headers,
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Server error");
+    }
+    const data = await response.json();
+    return {
+      ...data,
+    };
+  } catch (error) {
+    console.error(error, "error in fetch movie details");
+  }
+};

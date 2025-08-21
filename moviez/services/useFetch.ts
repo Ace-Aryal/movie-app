@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import databaseService from "./database";
 import { Movie } from "@/app/(tabs)/search";
 
-export function useFetch(
+export function useFetch<T>(
   fetchFn: () => Promise<unknown>,
   autoFetch = true,
   searchQuery = ""
 ) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [data, setData] = useState<Movie[] | null>(null);
+  const [data, setData] = useState<Movie[] | T | null>(null);
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -32,7 +32,7 @@ export function useFetch(
   };
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (searchQuery && data && data.length > 0) {
+      if (searchQuery && data && data?.length > 0) {
         console.log(data, "movie data");
         databaseService.updateSearchCount(searchQuery, data[0]);
       }

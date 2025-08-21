@@ -12,10 +12,9 @@ import {
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useFetch } from "@/services/useFetch";
-import { fetchMovies, TMBD_CONFIG } from "@/services/api";
+import { fetchMovies } from "@/services/api";
 import { Ionicons } from "@expo/vector-icons";
 import databaseService from "@/services/database";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 export type Movie = {
   adult: boolean;
   backdrop_path: string;
@@ -80,7 +79,7 @@ export default function Index() {
               <FlatList
                 horizontal
                 data={trendingMovies}
-                renderItem={({ item }) => (
+                renderItem={({ item, index }) => (
                   <View className="flex-row">
                     <TouchableOpacity className="flex-1 mb-16 mr-10">
                       <Link href={`/movie/${item.movie_id}`}>
@@ -96,11 +95,15 @@ export default function Index() {
                               uri: `https://image.tmdb.org/t/p/w500${item.poster_url}`,
                             }}
                           />
+                          <Text className=" absolute top-24 text-white font-semibold mt-1 text-7xl -left-2">
+                            {index + 1}
+                          </Text>
                           <Text
-                            className="text-white font-semibold mt-1"
                             numberOfLines={3}
                             ellipsizeMode="tail"
+                            className="text-gray-200 font-semibold mt-2"
                           >
+                            {" "}
                             {item.title}
                           </Text>
                         </View>
